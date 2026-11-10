@@ -15,8 +15,8 @@ const en = {
     return `${Number(d)} ${MONTHS_EN[Number(m) - 1]} ${y}`;
   },
 
-  kind: { thing: "Item", book: "Book", help: "Help" } as Record<Kind, string>,
-  kindPlural: { thing: "Items", book: "Books", help: "Help" } as Record<Kind, string>,
+  kind: { thing: "Item", book: "Book", help: "Service" } as Record<Kind, string>,
+  kindPlural: { thing: "Items", book: "Books", help: "Services" } as Record<Kind, string>,
   direction: { offer: "Offering", want: "Looking for" } as Record<Direction, string>,
   itemStatus: { draft: "Draft", available: "Available", busy: "Taken", hidden: "Hidden" },
   reqStatus: {
@@ -120,7 +120,7 @@ const en = {
   outgoing: "My requests",
 
   landing: {
-    headline: "Share items, books and help with your own people",
+    headline: "Share items, books and favours with your own people",
     lead: "A Telegram bot that turns a group chat into a shared catalog. Someone in your chat surely has what you need for one evening — you just have to find out.",
     cta: "Open in Telegram",
     howTitle: "How it works",
@@ -133,7 +133,7 @@ const en = {
     kinds: [
       { emoji: "🧰", title: "Items", text: "Tools, gadgets, gear, kids' stuff — anything you rarely need and would rather not buy." },
       { emoji: "📚", title: "Books", text: "Everyone's home library becomes a shared one." },
-      { emoji: "🤝", title: "Help", text: "Look after a cat, give a lift, teach knitting or explain spreadsheets — any favour or know-how." },
+      { emoji: "🤝", title: "Services", text: "Look after a cat, give a lift, teach knitting or explain spreadsheets — any favour or know-how. Free, between friends." },
     ],
     featuresTitle: "What the bot does",
     features: [
@@ -159,8 +159,8 @@ const ru: typeof en = {
   appName: "Share Circle",
   date: (iso) => iso.split("-").reverse().join("."),
 
-  kind: { thing: "Вещь", book: "Книга", help: "Помощь" },
-  kindPlural: { thing: "Вещи", book: "Книги", help: "Помощь" },
+  kind: { thing: "Вещь", book: "Книга", help: "Услуга" },
+  kindPlural: { thing: "Вещи", book: "Книги", help: "Услуги" },
   direction: { offer: "Предлагаю", want: "Ищу" },
   itemStatus: { draft: "Черновик", available: "Свободно", busy: "Занято", hidden: "Скрыто" },
   reqStatus: { pending: "Ждёт ответа", accepted: "Принят", handed: "На руках", done: "Завершён", declined: "Отклонён", cancelled: "Отменён" },
@@ -253,7 +253,7 @@ const ru: typeof en = {
   outgoing: "Прошу я",
 
   landing: {
-    headline: "Делитесь вещами, книгами и помощью со своими",
+    headline: "Делитесь вещами, книгами и услугами со своими",
     lead: "Бот для Telegram, который превращает групповой чат в общий каталог. У соседа по чату наверняка есть то, что вам нужно на один вечер, — осталось об этом узнать.",
     cta: "Открыть в Telegram",
     howTitle: "Как это работает",
@@ -266,7 +266,7 @@ const ru: typeof en = {
     kinds: [
       { emoji: "🧰", title: "Вещи", text: "Инструменты, техника, снаряжение, детские вещи — всё, что нужно редко и жалко покупать." },
       { emoji: "📚", title: "Книги", text: "Домашняя библиотека каждого становится общей." },
-      { emoji: "🤝", title: "Помощь", text: "Посидеть с кошкой, подвезти, научить вязанию или разобраться с таблицами — любая услуга или умение." },
+      { emoji: "🤝", title: "Услуги", text: "Посидеть с кошкой, подвезти, научить вязанию или разобраться с таблицами — любая дружеская услуга или умение. Бесплатно, по-соседски." },
     ],
     featuresTitle: "Что умеет бот",
     features: [

@@ -5,12 +5,24 @@ import { termsText } from "./termsText";
 import { KINDS, type Direction, type Kind } from "./strings";
 import { Chips, Empty, ItemGrid, LangSwitch, useLoad } from "./ui";
 
+/** Фильтры каталога живут дольше экрана: после «+» и возврата назад они сохраняются, а форма берёт из них категорию. */
+export const catalogFilters: { kind: Kind | "all"; direction: Direction | "all"; circle: string; text: string } = {
+  kind: "all",
+  direction: "all",
+  circle: "all",
+  text: "",
+};
+
 export function Catalog({ me }: { me: Me }) {
-  const [kind, setKind] = useState<Kind | "all">("all");
-  const [direction, setDirection] = useState<Direction | "all">("all");
-  const [circle, setCircle] = useState("all");
-  const [text, setText] = useState("");
-  const [query, setQuery] = useState("");
+  const [kind, setKind] = useState<Kind | "all">(catalogFilters.kind);
+  const [direction, setDirection] = useState<Direction | "all">(catalogFilters.direction);
+  const [circle, setCircle] = useState(catalogFilters.circle);
+  const [text, setText] = useState(catalogFilters.text);
+  const [query, setQuery] = useState(catalogFilters.text.trim());
+
+  useEffect(() => {
+    Object.assign(catalogFilters, { kind, direction, circle, text });
+  }, [kind, direction, circle, text]);
 
   useEffect(() => {
     const timer = setTimeout(() => setQuery(text.trim()), 250);

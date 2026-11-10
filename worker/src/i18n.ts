@@ -16,7 +16,7 @@ export function formatDate(iso: string, lang: Lang): string {
 }
 
 const en = {
-  kind: { thing: "Item", book: "Book", help: "Help" },
+  kind: { thing: "Item", book: "Book", help: "Service" },
   direction: { offer: "offered", want: "wanted" },
   view: "View",
   open: "Open",
@@ -48,7 +48,7 @@ const en = {
 
   // Чаты
   intro:
-    "👋 This chat now has a shared catalog: items, books and help that members are happy to share.\n\n" +
+    "👋 This chat now has a shared catalog: items, books and favours that members are happy to share.\n\n" +
     "Open the catalog, see what's there, and add something of your own.",
   inviteOnly: "Circles can only be created by invitation. Ask the bot's owner for an invite link and add me to the chat again.",
   topicDenied: "Only a chat admin or the person who added the bot can choose the topic for new listings.",
@@ -59,7 +59,7 @@ const en = {
   langDenied: "Only a chat admin or the person who added the bot can change the chat language.",
 
   // Личные сообщения
-  helpHead: "Share items, books and help with your circles.\n",
+  helpHead: "Share items, books and favours with your circles.\n",
   helpCreate: "• To start a circle, add me to a group chat.",
   helpInvited: "• A circle is a group chat with me in it. New circles are created by invitation.",
   helpPhoto: "• To add an item quickly, send me its photo with a caption.",
@@ -119,7 +119,7 @@ const en = {
 };
 
 const ru: typeof en = {
-  kind: { thing: "Вещь", book: "Книга", help: "Помощь" },
+  kind: { thing: "Вещь", book: "Книга", help: "Услуга" },
   direction: { offer: "предлагаю", want: "ищу" },
   view: "Посмотреть",
   open: "Открыть",
@@ -148,7 +148,7 @@ const ru: typeof en = {
   overdueOwner: (name, title, date) => `⏰ ${name} должен был вернуть «${title}» вчера (${date}).`,
 
   intro:
-    "👋 Теперь у этого чата есть общий каталог: вещи, книги и помощь, которыми участники готовы делиться.\n\n" +
+    "👋 Теперь у этого чата есть общий каталог: вещи, книги и услуги, которыми участники готовы делиться.\n\n" +
     "Откройте каталог, посмотрите, что уже есть, и добавьте своё.",
   inviteOnly: "Создавать круги можно только по приглашению. Попросите ссылку-приглашение у владельца бота и добавьте меня в чат снова.",
   topicDenied: "Выбрать тему для новинок может администратор чата или тот, кто добавил бота.",
@@ -158,7 +158,7 @@ const ru: typeof en = {
   circleLangSet: "Готово. В этом чате пишу по-русски.",
   langDenied: "Сменить язык чата может администратор чата или тот, кто добавил бота.",
 
-  helpHead: "Здесь можно делиться вещами, книгами и помощью со своими кругами.\n",
+  helpHead: "Здесь можно делиться вещами, книгами и услугами со своими кругами.\n",
   helpCreate: "• Чтобы завести круг, добавьте меня в групповой чат.",
   helpInvited: "• Круг — это групповой чат со мной. Новые круги создаются по приглашению.",
   helpPhoto: "• Чтобы быстро добавить вещь, пришлите её фото с подписью.",

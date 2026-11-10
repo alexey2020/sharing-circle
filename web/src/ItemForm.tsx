@@ -3,17 +3,23 @@ import { api, photoUrl, shrinkPhoto, type ItemInput, type Me } from "./api";
 import { t } from "./i18n";
 import { KINDS, type Direction, type Kind } from "./strings";
 import { Chips, go } from "./ui";
+import { catalogFilters } from "./Catalog";
 
 const MAX_PHOTOS = 6;
 
 export function ItemForm({ me, id }: { me: Me; id?: number }) {
   const [loaded, setLoaded] = useState(!id);
-  const [kind, setKind] = useState<Kind>("thing");
-  const [direction, setDirection] = useState<Direction>("offer");
+  // Новая запись начинается с той категории и того круга, что выбраны в каталоге.
+  const [kind, setKind] = useState<Kind>(!id && catalogFilters.kind !== "all" ? catalogFilters.kind : "thing");
+  const [direction, setDirection] = useState<Direction>(!id && catalogFilters.direction !== "all" ? catalogFilters.direction : "offer");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [photos, setPhotos] = useState<string[]>([]);
-  const [circleIds, setCircleIds] = useState<number[]>(me.circles.length === 1 ? [me.circles[0].id] : []);
+  const [circleIds, setCircleIds] = useState<number[]>(() => {
+    if (me.circles.length === 1) return [me.circles[0].id];
+    const picked = me.circles.find((c) => String(c.id) === catalogFilters.circle);
+    return !id && picked ? [picked.id] : [];
+  });
   const [visible, setVisible] = useState(true);
   // О новинке сообщаем один раз — при первой публикации, поэтому галочка есть только у новых записей и черновиков.
   const [canAnnounce, setCanAnnounce] = useState(!id);
