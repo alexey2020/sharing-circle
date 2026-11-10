@@ -28,7 +28,7 @@ const en = {
     cancelled: "Cancelled",
   } as Record<ReqStatus, string>,
 
-  tabs: { catalog: "Catalog", requests: "Requests", mine: "Mine" },
+  tabs: { catalog: "Catalog", requests: "Requests", mine: "Mine", help: "Help" },
   back: "← Back",
   add: "Add",
   language: "Language",
@@ -165,7 +165,7 @@ const ru: typeof en = {
   itemStatus: { draft: "Черновик", available: "Свободно", busy: "Занято", hidden: "Скрыто" },
   reqStatus: { pending: "Ждёт ответа", accepted: "Принят", handed: "На руках", done: "Завершён", declined: "Отклонён", cancelled: "Отменён" },
 
-  tabs: { catalog: "Каталог", requests: "Запросы", mine: "Моё" },
+  tabs: { catalog: "Каталог", requests: "Запросы", mine: "Моё", help: "Помощь" },
   back: "← Назад",
   add: "Добавить",
   language: "Язык",

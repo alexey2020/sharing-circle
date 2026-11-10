@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { createRoot } from "react-dom/client";
 import { api, hasAuth, tgApp, type Me } from "./api";
 import { Catalog, Mine } from "./Catalog";
+import { Help } from "./Help";
 import { ItemForm } from "./ItemForm";
 import { ItemPage } from "./ItemPage";
 import { Landing } from "./Landing";
@@ -25,6 +26,7 @@ const TABS = [
   { path: "/", key: "catalog", icon: "🗂" },
   { path: "/requests", key: "requests", icon: "🙋" },
   { path: "/mine", key: "mine", icon: "📦" },
+  { path: "/help", key: "help", icon: "❓" },
 ] as const;
 
 function App() {
@@ -99,6 +101,7 @@ function App() {
   else if (hash === "/new") page = <ItemForm me={me} />;
   else if (hash === "/requests") page = <Requests />;
   else if (hash === "/mine") page = <Mine />;
+  else if (hash === "/help") page = <Help />;
   else if (hash === "/terms") page = <TermsPage />;
   else page = <Catalog me={me} />;
 
@@ -114,7 +117,7 @@ function App() {
       </main>
       {isTab && (
         <>
-          {me.circles.length > 0 && hash !== "/requests" && (
+          {me.circles.length > 0 && hash !== "/requests" && hash !== "/help" && (
             <a className="fab" href="#/new" aria-label={t.add}>
               +
             </a>
