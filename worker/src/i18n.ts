@@ -35,7 +35,8 @@ const en = {
   writeTo: (name: string) => `Message ${name}`,
   accepted: (who: string, title: string) => `✅ ${who}: your request for “${title}” is accepted. Agree on how and when to meet.`,
   declined: (who: string, title: string) => `${who}: “${title}” isn't possible right now.`,
-  handed: (title: string, due: string | null) => `📦 “${title}” is now with you.` + (due ? ` Return by ${due}.` : ""),
+  handed: (title: string, due: string | null) =>
+    `📦 “${title}” is now with you.` + (due ? ` Return by ${due}.` : "") + "\nPlease take good care of it and return it clean and in working order.",
   doneLend: (title: string) => `🙌 “${title}” is back with its owner. Thank you!`,
   doneOther: (who: string, title: string) => `🙌 ${who}: “${title}” is all done. Thank you!`,
   cancelled: (who: string, title: string) => `${who}: the request for “${title}” was cancelled.`,
@@ -64,6 +65,7 @@ const en = {
   helpPhoto: "• To add an item quickly, send me its photo with a caption.",
   helpRest: "• Everything else is in the catalog.",
   helpLang: "• /lang — change language.",
+  helpRules: (url: string) => `\nBy using the bot you agree to the <a href="${url}">rules and privacy notice</a>.`,
   helpAdmin: "\nYou are the admin: /invite — invite someone to create circles, /circles — list of circles, /setup — refresh the command menu.",
   addToChat: "Add to a chat",
   badLink: "This link isn't valid.",
@@ -112,6 +114,7 @@ const en = {
     notYours: "This isn't your request",
     notNow: "This action isn't available right now",
     promised: "This item is already promised to someone else",
+    termsRequired: "Please accept the rules first",
   },
 };
 
@@ -134,7 +137,8 @@ const ru: typeof en = {
   writeTo: (name) => `Написать: ${name}`,
   accepted: (who, title) => `✅ ${who}: запрос на «${title}» принят. Договоритесь, как и когда встретиться.`,
   declined: (who, title) => `${who}: сейчас не получится с «${title}».`,
-  handed: (title, due) => `📦 «${title}» теперь у вас.` + (due ? ` Вернуть до ${due}.` : ""),
+  handed: (title, due) =>
+    `📦 «${title}» теперь у вас.` + (due ? ` Вернуть до ${due}.` : "") + "\nОбращайтесь бережно и верните в чистом и исправном состоянии.",
   doneLend: (title) => `🙌 «${title}» снова у владельца. Спасибо!`,
   doneOther: (who, title) => `🙌 ${who}: по «${title}» всё сделано. Спасибо!`,
   cancelled: (who, title) => `${who}: запрос на «${title}» отменён.`,
@@ -160,6 +164,7 @@ const ru: typeof en = {
   helpPhoto: "• Чтобы быстро добавить вещь, пришлите её фото с подписью.",
   helpRest: "• Всё остальное — в каталоге.",
   helpLang: "• /lang — сменить язык.",
+  helpRules: (url) => `\nПользуясь ботом, вы соглашаетесь с <a href="${url}">правилами и условиями обработки данных</a>.`,
   helpAdmin: "\nВы администратор: /invite — пригласить человека создавать круги, /circles — список кругов, /setup — обновить меню команд.",
   addToChat: "Добавить в чат",
   badLink: "Эта ссылка не подходит.",
@@ -210,6 +215,7 @@ const ru: typeof en = {
     notYours: "Это не ваш запрос",
     notNow: "Это действие сейчас недоступно",
     promised: "Вещь уже обещана другому человеку",
+    termsRequired: "Сначала согласитесь с правилами",
   },
 };
 

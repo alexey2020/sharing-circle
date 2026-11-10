@@ -25,6 +25,12 @@ export interface TgUser {
   allows_write_to_pm?: boolean;
 }
 
+/**
+ * Версия правил (web/src/termsText.ts). Увеличьте при существенном изменении текста —
+ * всех попросят согласиться заново.
+ */
+export const TERMS_VERSION = 1;
+
 export type Kind = "thing" | "book" | "help";
 export type Direction = "offer" | "want";
 export type ItemStatus = "draft" | "available" | "busy" | "hidden";

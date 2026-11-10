@@ -5,6 +5,7 @@ import { Catalog, Mine } from "./Catalog";
 import { ItemForm } from "./ItemForm";
 import { ItemPage } from "./ItemPage";
 import { Landing } from "./Landing";
+import { TermsGate, TermsPage } from "./Terms";
 import { Requests } from "./Requests";
 import { setLang, t, useLang } from "./i18n";
 import { Empty, go, useHash, useLoad } from "./ui";
@@ -29,7 +30,7 @@ const TABS = [
 function App() {
   const hash = useHash();
   useLang(); // перерисовываем всё приложение при смене языка
-  const { data: me, error } = useLoad<Me | null>(() => (hasAuth ? api.me() : Promise.resolve(null)), []);
+  const { data: me, error, reload } = useLoad<Me | null>(() => (hasAuth ? api.me() : Promise.resolve(null)), []);
   const isTab = TABS.some((tab) => tab.path === hash);
 
   // Язык хранится на сервере, чтобы интерфейс и бот говорили на одном.
@@ -65,9 +66,29 @@ function App() {
     return () => back.offClick(onBack);
   }, [isTab]);
 
-  if (!hasAuth) return <Landing />;
+  if (!hasAuth) {
+    // В обычном браузере: лендинг, а по ссылке из бота — отдельная страница с правилами.
+    if (hash === "/terms") {
+      return (
+        <main>
+          <a className="back" href="#/">
+            {t.back}
+          </a>
+          <TermsPage />
+        </main>
+      );
+    }
+    return <Landing />;
+  }
   if (error) return <Empty title={t.errLogin}>{error}</Empty>;
   if (!me) return null;
+  if (!me.termsAccepted && hash !== "/terms") {
+    return (
+      <main>
+        <TermsGate onAccepted={reload} />
+      </main>
+    );
+  }
 
   const item = /^\/item\/(\d+)$/.exec(hash);
   const edit = /^\/edit\/(\d+)$/.exec(hash);
@@ -78,6 +99,7 @@ function App() {
   else if (hash === "/new") page = <ItemForm me={me} />;
   else if (hash === "/requests") page = <Requests />;
   else if (hash === "/mine") page = <Mine />;
+  else if (hash === "/terms") page = <TermsPage />;
   else page = <Catalog me={me} />;
 
   return (

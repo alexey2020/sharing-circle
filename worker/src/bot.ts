@@ -185,6 +185,7 @@ async function onMessage(env: Env, msg: Message): Promise<void> {
 
   const lines = [t.helpHead, rights.canCreate ? t.helpCreate : t.helpInvited, t.helpPhoto, t.helpRest, t.helpLang];
   if (rights.isAdmin) lines.push(t.helpAdmin);
+  lines.push(t.helpRules(`${env.APP_URL}/#/terms`));
   const rows: unknown[][] = [[appButton(env, t.openCatalog)]];
   if (rights.canCreate) rows.push([addToChatButton(env, lang)]);
   await sendMessage(env, from.id, lines.join("\n"), { inline_keyboard: rows });

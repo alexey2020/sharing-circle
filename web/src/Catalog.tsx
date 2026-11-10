@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { api, type Me } from "./api";
-import { t } from "./i18n";
+import { t, useLang } from "./i18n";
+import { termsText } from "./termsText";
 import { KINDS, type Direction, type Kind } from "./strings";
 import { Chips, Empty, ItemGrid, LangSwitch, useLoad } from "./ui";
 
@@ -75,6 +76,7 @@ export function Catalog({ me }: { me: Me }) {
 }
 
 export function Mine() {
+  const lang = useLang();
   const { data, error } = useLoad(() => api.items({ mine: "1" }), []);
   return (
     <>
@@ -89,6 +91,9 @@ export function Mine() {
         </Empty>
       )}
       {data && <ItemGrid items={data.items} showStatus />}
+      <p className="terms-link">
+        <a href="#/terms">{termsText(lang).link}</a>
+      </p>
     </>
   );
 }

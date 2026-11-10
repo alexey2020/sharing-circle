@@ -5,7 +5,7 @@ import { asLang, tr, type Lang } from "./i18n";
 import { ACTIONS, isLendable, type Action } from "./flow";
 import { notifyNewItem, notifyNewRequest } from "./notify";
 import { applyAction } from "./requests";
-import { DIRECTIONS, KINDS, type Direction, type Env, type ItemStatus, type Kind, type TgUser } from "./types";
+import { DIRECTIONS, KINDS, TERMS_VERSION, type Direction, type Env, type ItemStatus, type Kind, type TgUser } from "./types";
 
 type Ctx = { Bindings: Env; Variables: { user: TgUser; lang: Lang; startParam?: string } };
 export const api = new Hono<Ctx>();
@@ -37,6 +37,17 @@ api.get("/photos/:key", async (c) => {
 api.get("/info", (c) =>
   c.json({ botUsername: c.env.BOT_USERNAME, adminContact: c.env.ADMIN_CONTACT || null, repoUrl: c.env.REPO_URL || null }),
 );
+
+async function hasAcceptedTerms(db: D1Database, userId: number): Promise<boolean> {
+  const row = await db.prepare(`SELECT terms_version FROM users WHERE id = ?1`).bind(userId).first<{ terms_version: number }>();
+  return (row?.terms_version ?? 0) >= TERMS_VERSION;
+}
+
+/** Публиковать и просить можно только после согласия с правилами. */
+const requireTerms = async (c: Context<Ctx>, next: () => Promise<void>) => {
+  if (!(await hasAcceptedTerms(c.env.DB, c.get("user").id))) return c.json({ error: E(c).termsRequired }, 403);
+  await next();
+};
 
 const DEV_NAMES: Record<number, string> = { 1: "Аня", 2: "Борис", 3: "Вера" };
 
@@ -93,9 +104,19 @@ api.get("/me", async (c) => {
     circles: await myCircles(c.env.DB, user.id),
     botUsername: c.env.BOT_USERNAME,
     canCreate: (await getRights(c.env.DB, user.id)).canCreate,
+    termsAccepted: await hasAcceptedTerms(c.env.DB, user.id),
     lang: c.get("lang"),
     openItem,
   });
+});
+
+api.post("/terms/accept", async (c) => {
+  const user = c.get("user");
+  await c.env.DB.batch([
+    c.env.DB.prepare(`UPDATE users SET terms_version = ?2, terms_accepted_at = datetime('now') WHERE id = ?1`).bind(user.id, TERMS_VERSION),
+    c.env.DB.prepare(`INSERT INTO events (actor_id, type) VALUES (?1, ?2)`).bind(user.id, `terms_accepted_v${TERMS_VERSION}`),
+  ]);
+  return c.json({ ok: true });
 });
 
 api.put("/lang", async (c) => {
@@ -283,7 +304,7 @@ api.get("/items/:id", async (c) => {
   });
 });
 
-api.post("/items", async (c) => {
+api.post("/items", requireTerms, async (c) => {
   const user = c.get("user");
   const allowed = new Set((await myCircles(c.env.DB, user.id)).map((x) => x.id));
   const input = parseItem(await c.req.json().catch(() => null), allowed, E(c));
@@ -312,7 +333,7 @@ api.post("/items", async (c) => {
   return c.json({ id }, 201);
 });
 
-api.put("/items/:id", async (c) => {
+api.put("/items/:id", requireTerms, async (c) => {
   const user = c.get("user");
   const id = Number(c.req.param("id"));
   const db = c.env.DB;
@@ -362,7 +383,7 @@ api.delete("/items/:id", async (c) => {
 
 // ---------- Запросы ----------
 
-api.post("/items/:id/requests", async (c) => {
+api.post("/items/:id/requests", requireTerms, async (c) => {
   const user = c.get("user");
   const id = Number(c.req.param("id"));
   const db = c.env.DB;

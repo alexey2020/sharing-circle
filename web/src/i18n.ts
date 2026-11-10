@@ -152,9 +152,6 @@ const en = {
     contactTitle: "Contact",
     contactText: "Questions, ideas or want your own circle — write to the admin:",
     repoText: "The code is open:",
-    dataTitle: "About your data",
-    dataText:
-      "A circle's catalog is visible only to members of its chat: leave the chat and you lose access. The bot doesn't read the chat's conversation; it only receives commands addressed to it. The service is free and non-commercial; it is run by one person who, as the administrator, has technical access to the catalogs' data.",
   },
 };
 
@@ -288,9 +285,6 @@ const ru: typeof en = {
     contactTitle: "Связь",
     contactText: "Вопросы, идеи или хотите свой круг — пишите администратору:",
     repoText: "Код открыт:",
-    dataTitle: "Что с данными",
-    dataText:
-      "Каталог круга видят только участники его чата: вышли из чата — потеряли доступ. Бот не читает переписку в чате, он получает только адресованные ему команды. Сервис бесплатный и некоммерческий; его ведёт один человек, и у него как у администратора есть технический доступ к данным каталогов.",
   },
 };
 

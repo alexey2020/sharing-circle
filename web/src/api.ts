@@ -40,6 +40,7 @@ export interface Me {
   circles: Circle[];
   botUsername: string;
   canCreate: boolean;
+  termsAccepted: boolean;
   lang: Lang;
   openItem: number | null;
 }
@@ -101,6 +102,7 @@ export interface ItemInput {
 
 export const api = {
   me: () => request<Me>("GET", "/me"),
+  acceptTerms: () => request<{ ok: true }>("POST", "/terms/accept"),
   setLang: (lang: Lang) => request<{ lang: Lang }>("PUT", "/lang", { lang }),
   items: (params: Record<string, string>) => request<{ items: ItemCard[] }>("GET", `/items?${new URLSearchParams(params)}`),
   item: (id: number) => request<Item>("GET", `/items/${id}`),

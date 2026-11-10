@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { t } from "./i18n";
+import { TermsContent } from "./Terms";
+import { termsText } from "./termsText";
 import { LangSwitch } from "./ui";
+import { useLang } from "./i18n";
 
 export function Landing() {
   const [info, setInfo] = useState<{ botUsername?: string; adminContact?: string | null; repoUrl?: string | null }>({});
@@ -12,6 +15,7 @@ export function Landing() {
   }, []);
   const bot = info.botUsername;
   const contact = info.adminContact?.replace(/^@/, "");
+  const lang = useLang();
   const l = t.landing;
   const cta = bot && (
     <a className="btn primary landing-cta" href={`https://t.me/${bot}`}>
@@ -82,8 +86,8 @@ export function Landing() {
       </section>
 
       <section>
-        <h2>{l.dataTitle}</h2>
-        <p>{l.dataText}</p>
+        <h2>{termsText(lang).title}</h2>
+        <TermsContent headingLevel={3} />
       </section>
 
       {(contact || info.repoUrl) && (

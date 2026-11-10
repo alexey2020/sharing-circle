@@ -83,6 +83,24 @@ describe("вход", () => {
   });
 });
 
+describe("правила", () => {
+  it("без согласия с правилами нельзя публиковать и просить; согласие запоминается", async () => {
+    const me = await call(11, "GET", "/me");
+    expect(me.json.termsAccepted).toBe(false);
+    const res = await call(11, "POST", "/items", { kind: "thing", direction: "offer", title: "Рано", description: "", circleIds: [], photoKeys: [] });
+    expect(res.status).toBe(403);
+    expect(res.json.error).toBe("Сначала согласитесь с правилами");
+    expect((await call(11, "POST", "/items/1/requests", {})).status).toBe(403);
+
+    expect((await call(11, "POST", "/terms/accept")).status).toBe(200);
+    expect((await call(11, "GET", "/me")).json.termsAccepted).toBe(true);
+    const row = await env.DB.prepare(`SELECT terms_version, terms_accepted_at FROM users WHERE id = 11`).first<any>();
+    expect(row.terms_version).toBe(1);
+    expect(row.terms_accepted_at).toBeTruthy();
+    for (const id of [12, 13, 14, 15, 16]) await call(id, "POST", "/terms/accept");
+  });
+});
+
 describe("круги", () => {
   it("добавление бота в чат создаёт круг и приглашение в чате", async () => {
     const intro = lastSent("sendMessage", -100)!;
