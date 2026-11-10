@@ -1,0 +1,25 @@
+name = "sharing-circle"
+main = "worker/src/index.ts"
+compatibility_date = "2026-10-01"
+
+[assets]
+directory = "web/dist"
+binding = "ASSETS"
+not_found_handling = "single-page-application"
+run_worker_first = ["/api/*", "/bot/*"]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "sharing-circle"
+database_id = "9ae7503c-83cf-4867-b1a4-d80a124ed021"
+migrations_dir = "worker/migrations"
+
+[[r2_buckets]]
+binding = "PHOTOS"
+bucket_name = "sharing-circle-photos"
+
+[triggers]
+crons = ["0 8 * * *"]
+
+# Секреты (BOT_TOKEN, WEBHOOK_SECRET, BOT_USERNAME, APP_URL) задаются
+# через scripts/setup.sh, локальные значения лежат в .dev.vars

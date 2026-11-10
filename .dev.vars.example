@@ -1,0 +1,5 @@
+DEV_AUTH=1
+BOT_TOKEN=dev
+WEBHOOK_SECRET=dev
+BOT_USERNAME=dev_bot
+APP_URL=http://localhost:8787
