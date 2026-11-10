@@ -3,13 +3,15 @@ import { t } from "./i18n";
 import { LangSwitch } from "./ui";
 
 export function Landing() {
-  const [bot, setBot] = useState<string | null>(null);
+  const [info, setInfo] = useState<{ botUsername?: string; adminContact?: string | null; repoUrl?: string | null }>({});
   useEffect(() => {
     fetch("/api/info")
       .then((r) => r.json())
-      .then((j: { botUsername?: string }) => setBot(j.botUsername ?? null))
+      .then(setInfo)
       .catch(() => {});
   }, []);
+  const bot = info.botUsername;
+  const contact = info.adminContact?.replace(/^@/, "");
   const l = t.landing;
   const cta = bot && (
     <a className="btn primary landing-cta" href={`https://t.me/${bot}`}>
@@ -83,6 +85,22 @@ export function Landing() {
         <h2>{l.dataTitle}</h2>
         <p>{l.dataText}</p>
       </section>
+
+      {(contact || info.repoUrl) && (
+        <section>
+          <h2>{l.contactTitle}</h2>
+          {contact && (
+            <p>
+              {l.contactText} <a href={`https://t.me/${contact}`}>@{contact}</a>
+            </p>
+          )}
+          {info.repoUrl && (
+            <p>
+              {l.repoText} <a href={info.repoUrl}>{info.repoUrl.replace(/^https?:\/\//, "")}</a>
+            </p>
+          )}
+        </section>
+      )}
 
       <footer className="landing-footer">{cta}</footer>
     </div>

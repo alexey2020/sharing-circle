@@ -8,6 +8,10 @@ export interface Env {
   ADMIN_KEY?: string;
   BOT_USERNAME: string;
   APP_URL: string;
+  /** Telegram username администратора для связи — показывается на лендинге */
+  ADMIN_CONTACT?: string;
+  /** Адрес репозитория с кодом — показывается на лендинге */
+  REPO_URL?: string;
   /** "1" только при локальной разработке: вход по заголовку X-Dev-User */
   DEV_AUTH?: string;
 }

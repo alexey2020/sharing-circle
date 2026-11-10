@@ -34,7 +34,9 @@ api.get("/photos/:key", async (c) => {
 });
 
 // Нужно лендингу, чтобы дать ссылку на бота. Имя бота и так публично.
-api.get("/info", (c) => c.json({ botUsername: c.env.BOT_USERNAME }));
+api.get("/info", (c) =>
+  c.json({ botUsername: c.env.BOT_USERNAME, adminContact: c.env.ADMIN_CONTACT || null, repoUrl: c.env.REPO_URL || null }),
+);
 
 const DEV_NAMES: Record<number, string> = { 1: "Аня", 2: "Борис", 3: "Вера" };
 

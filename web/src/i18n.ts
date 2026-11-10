@@ -149,6 +149,9 @@ const en = {
     startHaveText: "Tap “Open catalog” under its message in the chat, or send the command",
     startNew: "You want a circle in your own chat.",
     startNewText: "New circles are created by invitation: ask the person who told you about the bot for a link, follow it and add the bot to your chat.",
+    contactTitle: "Contact",
+    contactText: "Questions, ideas or want your own circle — write to the admin:",
+    repoText: "The code is open:",
     dataTitle: "About your data",
     dataText:
       "A circle's catalog is visible only to members of its chat: leave the chat and you lose access. The bot doesn't read the chat's conversation; it only receives commands addressed to it. The service is free and non-commercial; it is run by one person who, as the administrator, has technical access to the catalogs' data.",
@@ -282,6 +285,9 @@ const ru: typeof en = {
     startHaveText: "Нажмите «Открыть каталог» под его сообщением в чате или отправьте там команду",
     startNew: "Хотите завести круг в своём чате.",
     startNewText: "Новые круги создаются по приглашению: попросите ссылку у того, кто рассказал вам о боте, перейдите по ней и добавьте бота в свой чат.",
+    contactTitle: "Связь",
+    contactText: "Вопросы, идеи или хотите свой круг — пишите администратору:",
+    repoText: "Код открыт:",
     dataTitle: "Что с данными",
     dataText:
       "Каталог круга видят только участники его чата: вышли из чата — потеряли доступ. Бот не читает переписку в чате, он получает только адресованные ему команды. Сервис бесплатный и некоммерческий; его ведёт один человек, и у него как у администратора есть технический доступ к данным каталогов.",

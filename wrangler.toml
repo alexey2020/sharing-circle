@@ -8,6 +8,11 @@ binding = "ASSETS"
 not_found_handling = "single-page-application"
 run_worker_first = ["/api/*", "/bot/*"]
 
+# Ссылки на лендинге. Не секреты — их видит каждый посетитель страницы.
+[vars]
+ADMIN_CONTACT = "zip1337"
+REPO_URL = "https://github.com/alexey2020/sharing-circle"
+
 [[d1_databases]]
 binding = "DB"
 database_name = "sharing-circle"
