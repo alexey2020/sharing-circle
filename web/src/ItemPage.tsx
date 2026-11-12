@@ -189,7 +189,7 @@ function VisitorPanel(props: { item: Item; busy: boolean; run: (fn: () => Promis
     >
       <label>
         {t.message}
-        <textarea value={message} onChange={(e) => setMessage(e.target.value)} maxLength={500} rows={3} placeholder={t.messagePlaceholder} />
+        <textarea value={message} onChange={(e) => setMessage(e.target.value)} maxLength={500} rows={3} />
       </label>
       {item.lendable && (
         <label>
