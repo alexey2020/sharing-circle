@@ -448,6 +448,26 @@ describe("помощь", () => {
     expect((await call(12, "GET", `/items/${id}`)).json.status).toBe("available");
     expect((await call(11, "POST", `/requests/${r1}/handover`)).status).toBe(409);
     expect((await call(12, "POST", `/requests/${r1}/complete`)).json.status).toBe("done");
+    // завершённый запрос остаётся в карточке у владельца и у просившего
+    const owner = (await call(11, "GET", `/items/${id}`)).json;
+    expect(owner.requests.map((r: any) => r.status)).toEqual(["accepted", "done"]);
+    expect((await call(12, "GET", `/items/${id}`)).json.myRequest.status).toBe("done");
+  });
+
+  it("выполненное «ищу» скрывается из каталога, но остаётся в карточке", async () => {
+    const id = (await call(11, "POST", "/items", {
+      kind: "thing", direction: "want", title: "Нужен надувной матрац", description: "", circleIds: [1], photoKeys: [],
+    })).json.id;
+    const r = (await call(12, "POST", `/items/${id}/requests`, {})).json.id;
+    await call(11, "POST", `/requests/${r}/accept`);
+    expect((await call(11, "POST", `/requests/${r}/complete`)).json.status).toBe("done");
+
+    const owner = (await call(11, "GET", `/items/${id}`)).json;
+    expect(owner.status).toBe("hidden");
+    expect(owner.requests).toMatchObject([{ id: r, status: "done" }]);
+    expect((await call(12, "GET", `/items/${id}`)).json.myRequest.status).toBe("done");
+    expect((await call(15, "GET", `/items/${id}`)).status).toBe(404);
+    expect((await call(15, "GET", "/items")).json.items.some((i: any) => i.id === id)).toBe(false);
   });
 });
 

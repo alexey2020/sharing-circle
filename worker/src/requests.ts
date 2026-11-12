@@ -58,6 +58,10 @@ export async function applyAction(env: Env, requestId: number, actorId: number, 
       stmts.push(db.prepare(`UPDATE items SET status = 'available' WHERE id = ?1 AND status = 'busy'`).bind(r.item_id));
     }
   }
+  // «Ищу» выполнено — объявление больше не нужно в каталоге. Владелец может снова включить его в редактировании.
+  if (r.direction === "want" && next === "done") {
+    stmts.push(db.prepare(`UPDATE items SET status = 'hidden' WHERE id = ?1 AND status = 'available'`).bind(r.item_id));
+  }
   await db.batch(stmts);
 
   const actor = await db

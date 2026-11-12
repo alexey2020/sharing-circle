@@ -303,7 +303,9 @@ api.get("/items/:id", async (c) => {
       .prepare(
         `SELECT r.id, r.requester_id, r.status, r.message, r.due_date, u.first_name, u.last_name, u.username
          FROM requests r JOIN users u ON u.id = r.requester_id
-         WHERE r.item_id = ?1 AND r.status IN ('pending','accepted','handed') ORDER BY r.created_at`,
+         WHERE r.item_id = ?1 AND r.status IN ('pending','accepted','handed','done')
+         ORDER BY CASE WHEN r.status = 'done' THEN 1 ELSE 0 END, CASE WHEN r.status = 'done' THEN r.updated_at END DESC, r.created_at
+         LIMIT 30`,
       )
       .bind(id),
   ]);
@@ -317,8 +319,9 @@ api.get("/items/:id", async (c) => {
     username: r.username,
   });
   const lendable = isLendable(item);
+  // Завершённые запросы тоже показываем: после «Готово» запись не должна молча исчезать из карточки.
   const holderRow = lendable ? active.results.find((r: any) => r.status === "accepted" || r.status === "handed") : null;
-  const mine = active.results.find((r: any) => r.requester_id === user.id);
+  const mine = active.results.find((r: any) => r.requester_id === user.id); // активный, а если его нет — последний завершённый
 
   return c.json({
     id: item.id,

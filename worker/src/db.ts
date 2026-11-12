@@ -102,7 +102,9 @@ export async function canSee(db: D1Database, itemId: number, userId: number): Pr
            SELECT 1 FROM item_circles ic
            JOIN memberships m ON m.circle_id = ic.circle_id AND m.user_id = ?2
            JOIN circles c ON c.id = ic.circle_id AND c.active = 1
-           WHERE ic.item_id = i.id)))`,
+           WHERE ic.item_id = i.id))
+         -- участник запроса видит запись и после того, как её скрыли (например, «ищу» нашлось)
+         OR EXISTS (SELECT 1 FROM requests r WHERE r.item_id = i.id AND r.requester_id = ?2))`,
     )
     .bind(itemId, userId)
     .first();

@@ -110,11 +110,14 @@ function OwnerPanel(props: { item: Item; busy: boolean; onAction: (reqId: number
   return (
     <>
       {item.status === "draft" && <p className="notice">{t.draftNotice}</p>}
+      {item.direction === "want" && item.status === "hidden" && item.requests.some((r) => r.status === "done") && (
+        <p className="notice">{t.wantFulfilled}</p>
+      )}
       {item.requests.length > 0 && (
         <section>
           <h2>{t.requests}</h2>
           {item.requests.map((r) => (
-            <div key={r.id} className="request">
+            <div key={r.id} className={r.status === "done" ? "request past" : "request"}>
               <div className="request-head">
                 <strong>{r.username ? <a href={`https://t.me/${r.username}`}>{r.name}</a> : r.name}</strong>
                 <Badge tone={r.status === "pending" ? "accent" : "muted"}>{t.reqStatus[r.status]}</Badge>
@@ -144,7 +147,9 @@ function VisitorPanel(props: { item: Item; busy: boolean; run: (fn: () => Promis
   const [message, setMessage] = useState("");
   const [dueDate, setDueDate] = useState("");
 
-  if (item.myRequest) {
+  // Прошлый запрос завершён: благодарим, а по свободной записи можно попросить снова.
+  const done = item.myRequest?.status === "done";
+  if (item.myRequest && !done) {
     const r = item.myRequest;
     const text =
       r.status === "pending"
@@ -167,15 +172,19 @@ function VisitorPanel(props: { item: Item; busy: boolean; run: (fn: () => Promis
     );
   }
 
-  if (item.status !== "available") return <p className="notice">{t.busyNotice}</p>;
+  const doneNotice = done && <p className="notice">{t.requestDone}</p>;
+  if (item.status !== "available") return doneNotice || <p className="notice">{t.busyNotice}</p>;
 
   if (!open) {
     return (
-      <div className="actions">
-        <button className="btn primary wide" onClick={() => setOpen(true)}>
-          {askLabel(item)}
-        </button>
-      </div>
+      <>
+        {doneNotice}
+        <div className="actions">
+          <button className="btn primary wide" onClick={() => setOpen(true)}>
+            {askLabel(item)}
+          </button>
+        </div>
+      </>
     );
   }
 
