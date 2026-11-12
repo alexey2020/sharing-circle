@@ -55,8 +55,12 @@ export async function watchDomains(env: Env): Promise<void> {
   for (const domain of domains) {
     let state: DomainState | null = null;
     try {
-      const res = await fetch(`https://rdap.org/domain/${domain}`, { headers: { accept: "application/rdap+json" } });
+      // rdap.org перенаправляет на реестр нужной зоны; без User-Agent он отвечает 403.
+      const res = await fetch(`https://rdap.org/domain/${domain}`, {
+        headers: { accept: "application/rdap+json", "user-agent": "share-circle-bot (domain watch)" },
+      });
       state = parseRdap(res.status, res.status === 200 ? await res.json() : null);
+      if (!state) console.error(JSON.stringify({ msg: "rdap unexpected status", domain, status: res.status }));
     } catch (e) {
       console.error(JSON.stringify({ msg: "rdap failed", domain, error: String(e) }));
     }
