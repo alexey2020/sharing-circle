@@ -156,7 +156,8 @@ textarea {
 }
 .card-photo {
   position: relative;
-  aspect-ratio: 1;
+  /* Фото с телефона обычно вертикальные 3:4 — так они помещаются в плитку целиком */
+  aspect-ratio: 3 / 4;
   border-radius: var(--radius);
   background: var(--surface);
   overflow: hidden;
@@ -224,16 +225,19 @@ textarea {
   padding: 0 16px;
   scrollbar-width: none;
 }
+/* В карточке фото показываем целиком, без обрезки: высота общая, ширина — по пропорциям снимка */
 .photos img {
   flex: none;
-  width: min(100%, 420px);
-  aspect-ratio: 4 / 3;
-  object-fit: cover;
+  height: min(60vh, 480px);
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+  background: var(--surface);
   border-radius: var(--radius);
   scroll-snap-align: center;
 }
 .photos img:only-child {
-  width: 100%;
+  margin: 0 auto;
 }
 .photo-placeholder {
   height: 140px;
