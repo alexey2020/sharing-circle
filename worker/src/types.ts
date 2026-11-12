@@ -12,6 +12,7 @@ export interface Env {
   ADMIN_CONTACT?: string;
   /** Адрес репозитория с кодом — показывается на лендинге */
   REPO_URL?: string;
+  WATCH_DOMAINS?: string;
   /** "1" только при локальной разработке: вход по заголовку X-Dev-User */
   DEV_AUTH?: string;
 }

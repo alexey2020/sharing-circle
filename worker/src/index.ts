@@ -4,6 +4,7 @@ import { asLang, tr } from "./i18n";
 import { handleUpdate, type Update } from "./bot";
 import { runReminders } from "./notify";
 import type { Env } from "./types";
+import { watchDomains } from "./watch";
 
 const app = new Hono<{ Bindings: Env }>();
 
@@ -30,9 +31,13 @@ app.onError((e, c) => {
 
 export { app };
 
+const DAILY_CRON = "0 8 * * *";
+
 export default {
   fetch: app.fetch,
-  async scheduled(_event: ScheduledController, env: Env, ctx: ExecutionContext) {
-    ctx.waitUntil(runReminders(env));
+  async scheduled(event: ScheduledController, env: Env, ctx: ExecutionContext) {
+    // Раз в день — напоминания о возврате, раз в час — проверка доменов из WATCH_DOMAINS.
+    if (event.cron === DAILY_CRON) ctx.waitUntil(runReminders(env));
+    else ctx.waitUntil(watchDomains(env));
   },
 };

@@ -3,6 +3,7 @@ import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { getPlatformProxy } from "wrangler";
 import { signInitData } from "../worker/src/auth";
 import { handleUpdate } from "../worker/src/bot";
+import { parseRdap, watchDomains } from "../worker/src/watch";
 import { app } from "../worker/src/index";
 import type { Env } from "../worker/src/types";
 
@@ -499,5 +500,45 @@ describe("бот", () => {
     });
     expect((await call(13, "GET", "/me")).json.circles).toEqual([]);
     expect((await call(11, "GET", "/items?circle=2")).json.items).toEqual([]);
+  });
+});
+
+describe("наблюдение за доменом", () => {
+  it("разбирает ответ реестра", () => {
+    const ev = [{ eventAction: "expiration", eventDate: "2026-09-11T09:25:43Z" }];
+    expect(parseRdap(404, null)).toEqual({ kind: "available", expires: null });
+    expect(parseRdap(200, { status: ["pending delete", "redemption period"], events: ev })).toEqual({ kind: "redemption", expires: "2026-09-11" });
+    expect(parseRdap(200, { status: ["pending delete"], events: ev })?.kind).toBe("pendingDelete");
+    expect(parseRdap(200, { status: ["client transfer prohibited"], events: ev })?.kind).toBe("registered");
+    expect(parseRdap(503, null)).toBeNull();
+  });
+
+  it("пишет админу только при смене состояния", async () => {
+    let rdap: { status: number; body: unknown } = { status: 200, body: { status: ["redemption period"], events: [] } };
+    vi.stubGlobal("fetch", async (url: string, init: any) => {
+      if (String(url).startsWith("https://rdap.org/")) return new Response(JSON.stringify(rdap.body), { status: rdap.status });
+      sent.push({ method: String(url).split("/").pop()!, params: JSON.parse(init.body) });
+      return new Response(JSON.stringify({ ok: true, result: true }));
+    });
+    const e = { ...env, WATCH_DOMAINS: "example.app" };
+    const toAdmin = () => sent.filter((s) => s.params.chat_id === 11 && s.params.text?.includes("example.app"));
+
+    await watchDomains(e);
+    expect(toAdmin()).toHaveLength(1);
+    expect(toAdmin()[0].params.text).toContain("выкуп");
+
+    await watchDomains(e); // ничего не изменилось — молчим
+    expect(toAdmin()).toHaveLength(1);
+
+    rdap = { status: 503, body: null }; // реестр сбоит — тоже молчим
+    await watchDomains(e);
+    expect(toAdmin()).toHaveLength(1);
+
+    rdap = { status: 404, body: null };
+    await watchDomains(e);
+    expect(toAdmin()).toHaveLength(2);
+    expect(toAdmin()[1].params.text).toContain("свободен");
+    // Обычным участникам не пишем
+    expect(sent.some((s) => s.params.chat_id === 12 && s.params.text?.includes("example.app"))).toBe(false);
   });
 });
