@@ -105,3 +105,21 @@ export function ItemGrid(props: { items: ItemCard[]; showStatus?: boolean }) {
     </div>
   );
 }
+
+/** Подсказка, какие вещи лучше всего подходят для обмена. Вкладка «Помощь» и лендинг. */
+export function GoodToShare({ heading = "h3" }: { heading?: "h2" | "h3" }) {
+  const g = t.goodToShare;
+  const H = heading;
+  return (
+    <div className="good-to-share">
+      <H>{g.title}</H>
+      <ul>
+        {g.items.map((it) => (
+          <li key={it.label}>
+            <span aria-hidden>{it.emoji}</span> {it.label}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}

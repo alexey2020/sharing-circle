@@ -670,3 +670,23 @@ button.link {
   font: inherit;
   cursor: pointer;
 }
+
+/* Чем лучше всего делиться */
+.good-to-share ul {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.good-to-share li {
+  background: var(--surface);
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 14px;
+}
+.good-to-share h3 {
+  margin: 16px 0 0;
+  font-size: 16px;
+}

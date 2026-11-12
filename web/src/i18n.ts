@@ -56,6 +56,16 @@ const en = {
   emptyCatalogHint: "Add the first listing with the “+” button below.",
   mineEmpty: "You haven't added anything yet",
   mineEmptyHint: "Tap “+” or send the bot a photo of an item with a caption.",
+  goodToShare: {
+    title: "What shares best",
+    items: [
+      { emoji: "⛺", label: "Camping gear" },
+      { emoji: "🎿", label: "Sports equipment" },
+      { emoji: "🎲", label: "Board games" },
+      { emoji: "🔌", label: "Power tools" },
+      { emoji: "🧱", label: "Lego sets" },
+    ],
+  },
   share: {
     open: "Add my entries to a circle",
     hint: "Pick a circle and the entries its members should see. Nothing is posted to the chat.",
@@ -200,6 +210,16 @@ const ru: typeof en = {
   emptyCatalogHint: "Добавьте первую запись — кнопка «+» внизу.",
   mineEmpty: "Вы ещё ничего не добавили",
   mineEmptyHint: "Нажмите «+» или пришлите боту фото вещи с подписью.",
+  goodToShare: {
+    title: "Чем лучше всего делиться",
+    items: [
+      { emoji: "⛺", label: "Туристический инвентарь" },
+      { emoji: "🎿", label: "Спортивный инвентарь" },
+      { emoji: "🎲", label: "Настольные игры" },
+      { emoji: "🔌", label: "Электроинструменты" },
+      { emoji: "🧱", label: "Конструкторы Lego" },
+    ],
+  },
   share: {
     open: "Добавить мои записи в круг",
     hint: "Выберите круг и записи, которые увидят его участники. В чат ничего не отправится.",

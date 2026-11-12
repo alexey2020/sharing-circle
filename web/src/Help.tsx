@@ -1,6 +1,6 @@
 import { useLang, type Lang } from "./i18n";
 import { TermsContent } from "./Terms";
-import { LangSwitch } from "./ui";
+import { GoodToShare, LangSwitch } from "./ui";
 
 interface Section {
   title: string;
@@ -122,12 +122,14 @@ export function Help() {
       </div>
       <div className="help">
         <h2>{h.guideTitle}</h2>
-        {h.sections.map((s) => (
+        {h.sections.map((s, i) => (
           <section key={s.title}>
             <h3>{s.title}</h3>
             {s.text.map((p) => (
               <p key={p}>{p}</p>
             ))}
+            {/* Сразу после рассказа о каталоге — чем стоит его наполнять */}
+            {i === 0 && <GoodToShare />}
           </section>
         ))}
       </div>

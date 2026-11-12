@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { t } from "./i18n";
 import { TermsContent } from "./Terms";
 import { termsText } from "./termsText";
-import { LangSwitch } from "./ui";
+import { LangSwitch, GoodToShare } from "./ui";
 import { useLang } from "./i18n";
 
 export function Landing() {
@@ -61,6 +61,7 @@ export function Landing() {
             </div>
           ))}
         </div>
+        <GoodToShare />
       </section>
 
       <section>
