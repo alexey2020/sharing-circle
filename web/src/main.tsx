@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { createRoot } from "react-dom/client";
 import { api, hasAuth, tgApp, type Me } from "./api";
 import { Catalog, catalogFilters, Mine } from "./Catalog";
-import { Help } from "./Help";
+import { Changelog, Help } from "./Help";
 import { ItemForm } from "./ItemForm";
 import { ItemPage } from "./ItemPage";
 import { ShareToCircle } from "./ShareToCircle";
@@ -112,6 +112,7 @@ function App() {
   else if (hash === "/mine") page = <Mine me={me} />;
   else if (hash === "/share") page = <ShareToCircle me={me} />;
   else if (hash === "/help") page = <Help />;
+  else if (hash === "/changelog") page = <Changelog />;
   else if (hash === "/terms") page = <TermsPage />;
   else page = <Catalog me={me} />;
 

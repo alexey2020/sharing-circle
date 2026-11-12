@@ -605,3 +605,20 @@ describe("несколько записей в круг разом", () => {
     expect((await call(11, "GET", "/me")).json.openCircle).toBeNull();
   });
 });
+
+describe("версия", () => {
+  it("номер версии в приложении совпадает с package.json, история упорядочена", async () => {
+    const { CHANGELOG, VERSION } = await import("../web/src/changelog");
+    const pkg = (await import("../package.json")).default as { version: string };
+    expect(VERSION).toBe(pkg.version);
+    for (const r of CHANGELOG) {
+      expect(r.version).toMatch(/^\d+\.\d+\.\d+$/);
+      expect(r.en.length).toBe(r.ru.length);
+    }
+    const nums = CHANGELOG.map((r) => r.version.split(".").map(Number));
+    for (let i = 1; i < nums.length; i++) {
+      const [a, b] = [nums[i - 1], nums[i]];
+      expect(a[0] * 1e6 + a[1] * 1e3 + a[2]).toBeGreaterThan(b[0] * 1e6 + b[1] * 1e3 + b[2]);
+    }
+  });
+});

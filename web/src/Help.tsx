@@ -1,4 +1,5 @@
-import { useLang, type Lang } from "./i18n";
+import { CHANGELOG, VERSION } from "./changelog";
+import { t, useLang, type Lang } from "./i18n";
 import { TermsContent } from "./Terms";
 import { GoodToShare, LangSwitch } from "./ui";
 
@@ -134,6 +135,33 @@ export function Help() {
         ))}
       </div>
       <TermsContent />
+      <p className="version">
+        {t.version(VERSION)} · <a href="#/changelog">{t.changelog}</a>
+      </p>
+    </>
+  );
+}
+
+/** «Что нового»: история версий, открывается из подвала вкладки «Помощь». */
+export function Changelog() {
+  const lang = useLang();
+  return (
+    <>
+      <h1>{t.changelog}</h1>
+      <div className="help changelog">
+        {CHANGELOG.map((r) => (
+          <section key={r.version}>
+            <h3>
+              {r.version} <span className="hint">· {t.date(r.date)}</span>
+            </h3>
+            <ul>
+              {r[lang].map((line) => (
+                <li key={line}>{line}</li>
+              ))}
+            </ul>
+          </section>
+        ))}
+      </div>
     </>
   );
 }

@@ -56,6 +56,8 @@ const en = {
   emptyCatalogHint: "Add the first listing with the “+” button below.",
   mineEmpty: "You haven't added anything yet",
   mineEmptyHint: "Tap “+” or send the bot a photo of an item with a caption.",
+  version: (v: string) => `Version ${v}`,
+  changelog: "What's new",
   goodToShare: {
     title: "What shares best",
     items: [
@@ -212,6 +214,8 @@ const ru: typeof en = {
   emptyCatalogHint: "Добавьте первую запись — кнопка «+» внизу.",
   mineEmpty: "Вы ещё ничего не добавили",
   mineEmptyHint: "Нажмите «+» или пришлите боту фото вещи с подписью.",
+  version: (v: string) => `Версия ${v}`,
+  changelog: "Что нового",
   goodToShare: {
     title: "Чем лучше всего делиться",
     items: [
