@@ -21,11 +21,19 @@ function authHeaders(): Record<string, string> {
 }
 
 async function request<T>(method: string, path: string, body?: unknown): Promise<T> {
-  const res = await fetch(`/api${path}`, {
-    method,
-    headers: { ...authHeaders(), ...(body !== undefined ? { "content-type": "application/json" } : {}) },
-    body: body !== undefined ? JSON.stringify(body) : undefined,
-  });
+  const send = () =>
+    fetch(`/api${path}`, {
+      method,
+      headers: { ...authHeaders(), ...(body !== undefined ? { "content-type": "application/json" } : {}) },
+      body: body !== undefined ? JSON.stringify(body) : undefined,
+    });
+  let res = await send().catch(() => null);
+  // Чтение безопасно повторить: разовый сбой сети или базы пользователь не заметит.
+  if (method === "GET" && (!res || res.status >= 500)) {
+    await new Promise((r) => setTimeout(r, 500));
+    res = await send().catch(() => null);
+  }
+  if (!res) throw new Error(t.errGeneric);
   const json = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error((json as any).error ?? t.errGeneric);
   return json as T;

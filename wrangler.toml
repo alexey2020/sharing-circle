@@ -28,3 +28,7 @@ crons = ["0 8 * * *"]
 
 # Секреты (BOT_TOKEN, WEBHOOK_SECRET, BOT_USERNAME, APP_URL) задаются
 # через scripts/setup.sh, локальные значения лежат в .dev.vars
+
+# Логи хранятся в Cloudflare (Workers → sharing-circle → Logs), чтобы разбирать ошибки задним числом.
+[observability]
+enabled = true

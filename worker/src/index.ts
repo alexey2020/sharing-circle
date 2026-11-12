@@ -23,7 +23,8 @@ app.post("/bot/webhook", async (c) => {
 });
 
 app.onError((e, c) => {
-  console.error(e);
+  const user = (c as any).get("user") as { id: number } | undefined;
+  console.error(JSON.stringify({ msg: "request failed", method: c.req.method, path: c.req.path, user: user?.id ?? null, error: String(e), stack: (e as Error)?.stack }));
   return c.json({ error: tr(asLang((c as any).get("lang")) ?? "en").err.generic }, 500);
 });
 
