@@ -51,6 +51,7 @@ export interface Me {
   termsAccepted: boolean;
   lang: Lang;
   openItem: number | null;
+  openCircle: number | null;
 }
 export interface ItemCard {
   id: number;
@@ -61,6 +62,8 @@ export interface ItemCard {
   ownerId: number;
   ownerName: string;
   photo: string | null;
+  /** Только в списке своих записей */
+  circleIds?: number[];
 }
 export interface Req {
   id: number;
@@ -116,6 +119,7 @@ export const api = {
   item: (id: number) => request<Item>("GET", `/items/${id}`),
   createItem: (input: ItemInput) => request<{ id: number }>("POST", "/items", input),
   updateItem: (id: number, input: ItemInput) => request<{ id: number }>("PUT", `/items/${id}`, input),
+  addToCircle: (circleId: number, itemIds: number[]) => request<{ added: number }>("POST", `/circles/${circleId}/items`, { itemIds }),
   deleteItem: (id: number) => request<{ ok: true }>("DELETE", `/items/${id}`),
   ask: (id: number, message: string, dueDate: string | null) =>
     request<{ id: number }>("POST", `/items/${id}/requests`, { message, dueDate }),
@@ -152,4 +156,12 @@ export function confirmDialog(text: string): Promise<boolean> {
     return new Promise((resolve) => tgApp.showConfirm(text, resolve));
   }
   return Promise.resolve(window.confirm(text));
+}
+
+export function alertDialog(text: string): Promise<void> {
+  if (tgApp?.showAlert && tgApp.isVersionAtLeast?.("6.2")) {
+    return new Promise((resolve) => tgApp.showAlert(text, () => resolve()));
+  }
+  window.alert(text);
+  return Promise.resolve();
 }

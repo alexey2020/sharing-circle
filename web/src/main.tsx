@@ -1,10 +1,11 @@
 import { useEffect } from "react";
 import { createRoot } from "react-dom/client";
 import { api, hasAuth, tgApp, type Me } from "./api";
-import { Catalog, Mine } from "./Catalog";
+import { Catalog, catalogFilters, Mine } from "./Catalog";
 import { Help } from "./Help";
 import { ItemForm } from "./ItemForm";
 import { ItemPage } from "./ItemPage";
+import { ShareToCircle } from "./ShareToCircle";
 import { Landing } from "./Landing";
 import { TermsGate, TermsPage } from "./Terms";
 import { Requests } from "./Requests";
@@ -28,6 +29,8 @@ const TABS = [
   { path: "/mine", key: "mine", icon: "📦" },
   { path: "/help", key: "help", icon: "❓" },
 ] as const;
+
+let openCircleApplied = false;
 
 function App() {
   const hash = useHash();
@@ -92,6 +95,12 @@ function App() {
     );
   }
 
+  // Открыли из чата круга — каталог сразу отфильтрован по этому кругу (один раз за запуск).
+  if (me.openCircle && !openCircleApplied && me.circles.some((c) => c.id === me.openCircle)) {
+    openCircleApplied = true;
+    catalogFilters.circle = String(me.openCircle);
+  }
+
   const item = /^\/item\/(\d+)$/.exec(hash);
   const edit = /^\/edit\/(\d+)$/.exec(hash);
 
@@ -100,7 +109,8 @@ function App() {
   else if (edit) page = <ItemForm key={edit[1]} me={me} id={Number(edit[1])} />;
   else if (hash === "/new") page = <ItemForm me={me} />;
   else if (hash === "/requests") page = <Requests />;
-  else if (hash === "/mine") page = <Mine />;
+  else if (hash === "/mine") page = <Mine me={me} />;
+  else if (hash === "/share") page = <ShareToCircle me={me} />;
   else if (hash === "/help") page = <Help />;
   else if (hash === "/terms") page = <TermsPage />;
   else page = <Catalog me={me} />;

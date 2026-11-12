@@ -651,3 +651,22 @@ textarea {
   margin: 0 0 8px;
   line-height: 1.45;
 }
+
+/* Добавление своих записей в круг */
+.share-open {
+  display: block;
+  text-align: center;
+  margin-bottom: 12px;
+}
+.share-tools {
+  justify-content: flex-start;
+  gap: 16px;
+}
+button.link {
+  background: none;
+  border: 0;
+  padding: 4px 0;
+  color: var(--accent);
+  font: inherit;
+  cursor: pointer;
+}

@@ -86,7 +86,7 @@ export function Catalog({ me }: { me: Me }) {
   );
 }
 
-export function Mine() {
+export function Mine({ me }: { me: Me }) {
   const { data, error } = useLoad(() => api.items({ mine: "1" }), []);
   return (
     <>
@@ -99,6 +99,11 @@ export function Mine() {
         <Empty title={t.mineEmpty}>
           <p>{t.mineEmptyHint}</p>
         </Empty>
+      )}
+      {data && data.items.length > 0 && me.circles.length > 1 && (
+        <a className="btn wide share-open" href="#/share">
+          {t.share.open}
+        </a>
       )}
       {data && <ItemGrid items={data.items} showStatus />}
     </>

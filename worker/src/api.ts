@@ -89,10 +89,15 @@ api.get("/me", async (c) => {
   const user = c.get("user");
   const sp = c.get("startParam") ?? "";
   let openItem: number | null = null;
+  let openCircle: number | null = null;
 
   const circleMatch = /^c(\d+)$/.exec(sp);
   const itemMatch = /^i(\d+)$/.exec(sp);
-  if (circleMatch) await joinCircle(c.env, user.id, Number(circleMatch[1]));
+  if (circleMatch) {
+    // Каталог открыли кнопкой из чата — показываем записи именно этого круга.
+    openCircle = Number(circleMatch[1]);
+    await joinCircle(c.env, user.id, openCircle);
+  }
   if (itemMatch) {
     openItem = Number(itemMatch[1]);
     await joinCirclesOfItem(c.env, user.id, openItem);
@@ -107,6 +112,7 @@ api.get("/me", async (c) => {
     termsAccepted: await hasAcceptedTerms(c.env.DB, user.id),
     lang: c.get("lang"),
     openItem,
+    openCircle,
   });
 });
 
@@ -231,14 +237,42 @@ api.get("/items", async (c) => {
   const { results } = await c.env.DB.prepare(
     `SELECT i.id, i.kind, i.direction, i.title, i.status, i.owner_id AS ownerId,
             u.first_name AS ownerName,
-            (SELECT key FROM item_photos p WHERE p.item_id = i.id ORDER BY position LIMIT 1) AS photo
+            (SELECT key FROM item_photos p WHERE p.item_id = i.id ORDER BY position LIMIT 1) AS photo,
+            (SELECT group_concat(circle_id) FROM item_circles ic WHERE ic.item_id = i.id) AS circleIds
      FROM items i JOIN users u ON u.id = i.owner_id
      WHERE ${where.join(" AND ")}
      ORDER BY i.created_at DESC, i.id DESC LIMIT 200`,
   )
     .bind(...args)
-    .all();
-  return c.json({ items: results });
+    .all<Record<string, unknown> & { circleIds: string | null }>();
+  // Круги показываем только владельцу — по ним он решает, куда ещё добавить свои записи.
+  const items = results.map(({ circleIds, ...it }) =>
+    q.mine === "1" ? { ...it, circleIds: circleIds ? circleIds.split(",").map(Number) : [] } : it,
+  );
+  return c.json({ items });
+});
+
+/** Добавить несколько своих записей в круг разом (например, в только что созданный). В чат не объявляем, чтобы не засыпать его. */
+api.post("/circles/:id/items", async (c) => {
+  const user = c.get("user");
+  const circleId = Number(c.req.param("id"));
+  const mine = await myCircles(c.env.DB, user.id);
+  if (!mine.some((x) => x.id === circleId)) return c.json({ error: E(c).ownCirclesOnly }, 403);
+  const body = (await c.req.json().catch(() => null)) as { itemIds?: unknown } | null;
+  const ids = [...new Set((Array.isArray(body?.itemIds) ? body.itemIds : []).map(Number).filter(Number.isInteger))].slice(0, 500);
+  if (!ids.length) return c.json({ added: 0 });
+
+  const db = c.env.DB;
+  // Чужие записи молча пропускаются: условие owner_id отсекает их прямо в запросе.
+  const results = await db.batch(
+    ids.map((id) =>
+      db
+        .prepare(`INSERT OR IGNORE INTO item_circles (item_id, circle_id) SELECT id, ?2 FROM items WHERE id = ?1 AND owner_id = ?3`)
+        .bind(id, circleId, user.id),
+    ),
+  );
+  const added = results.reduce((n, r) => n + (r.meta.changes ?? 0), 0);
+  return c.json({ added });
 });
 
 api.get("/items/:id", async (c) => {

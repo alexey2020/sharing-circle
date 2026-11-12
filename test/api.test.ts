@@ -542,3 +542,46 @@ describe("наблюдение за доменом", () => {
     expect(sent.some((s) => s.params.chat_id === 12 && s.params.text?.includes("example.app"))).toBe(false);
   });
 });
+
+describe("несколько записей в круг разом", () => {
+  let circleId = 0;
+
+  it("добавляет только свои записи и только в свои круги", async () => {
+    vi.stubGlobal("fetch", async (url: string, init: any) => {
+      const method = String(url).split("/").pop()!;
+      const params = JSON.parse(init.body);
+      sent.push({ method, params });
+      const result = method === "getChatMember" ? { status: chatMembers[params.chat_id]?.has(params.user_id) ? "member" : "left" } : true;
+      return new Response(JSON.stringify({ ok: true, result }));
+    });
+    // Новый чат «Пряники»: Аня и Вера. Старые записи Ани сами туда не попадают.
+    chatMembers[-700] = new Set([11, 13]);
+    await addBot(-700, "Пряники", 11);
+    circleId = (await env.DB.prepare(`SELECT id FROM circles WHERE chat_id = -700`).first<{ id: number }>())!.id;
+    for (const u of [11, 13]) await call(u, "GET", "/me", undefined, `c${circleId}`);
+
+    const base = { kind: "thing", direction: "offer", description: "", photoKeys: [], announce: false };
+    const a = (await call(11, "POST", "/items", { ...base, title: "Палатка", circleIds: [1] })).json.id;
+    const b = (await call(11, "POST", "/items", { ...base, title: "Спальник", circleIds: [1] })).json.id;
+    const foreign = (await call(12, "POST", "/items", { ...base, title: "Чужая лодка", circleIds: [1] })).json.id;
+
+    const mine = await call(11, "GET", "/items?mine=1");
+    expect(mine.json.items.find((it: any) => it.id === a).circleIds).toEqual([1]);
+    expect((await call(13, "GET", `/items?circle=${circleId}`)).json.items).toEqual([]);
+
+    const res = await call(11, "POST", `/circles/${circleId}/items`, { itemIds: [a, b, foreign] });
+    expect(res.json.added).toBe(2);
+    // Чужая запись в круг не попала, а свои видны участнице Вере
+    const forVera = (await call(13, "GET", `/items?circle=${circleId}`)).json.items.map((it: any) => it.title);
+    expect(forVera.sort()).toEqual(["Палатка", "Спальник"]);
+    // Повтор ничего не дублирует
+    expect((await call(11, "POST", `/circles/${circleId}/items`, { itemIds: [a] })).json.added).toBe(0);
+    // В чужой круг нельзя: Борис в «Пряниках» не состоит
+    expect((await call(12, "POST", `/circles/${circleId}/items`, { itemIds: [foreign] })).status).toBe(403);
+  });
+
+  it("каталог из кнопки в чате открывается на этом круге", async () => {
+    expect((await call(11, "GET", "/me", undefined, `c${circleId}`)).json.openCircle).toBe(circleId);
+    expect((await call(11, "GET", "/me")).json.openCircle).toBeNull();
+  });
+});

@@ -56,6 +56,15 @@ const en = {
   emptyCatalogHint: "Add the first listing with the “+” button below.",
   mineEmpty: "You haven't added anything yet",
   mineEmptyHint: "Tap “+” or send the bot a photo of an item with a caption.",
+  share: {
+    open: "Add my entries to a circle",
+    hint: "Pick a circle and the entries its members should see. Nothing is posted to the chat.",
+    allThere: "All your entries are already in this circle.",
+    selectAll: "Select all",
+    selectNone: "Clear",
+    button: (n: number) => `Add to circle (${n})`,
+    done: (n: number, circle: string) => `Added ${n} to “${circle}”.`,
+  },
 
   // Карточка
   owner: "Owner",
@@ -191,6 +200,15 @@ const ru: typeof en = {
   emptyCatalogHint: "Добавьте первую запись — кнопка «+» внизу.",
   mineEmpty: "Вы ещё ничего не добавили",
   mineEmptyHint: "Нажмите «+» или пришлите боту фото вещи с подписью.",
+  share: {
+    open: "Добавить мои записи в круг",
+    hint: "Выберите круг и записи, которые увидят его участники. В чат ничего не отправится.",
+    allThere: "Все ваши записи уже есть в этом круге.",
+    selectAll: "Выбрать все",
+    selectNone: "Снять все",
+    button: (n) => `Добавить в круг (${n})`,
+    done: (n, circle) => `Добавлено в «${circle}»: ${n}.`,
+  },
 
   owner: "Владелец",
   seeker: "Кто ищет",
