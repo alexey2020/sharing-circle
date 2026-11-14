@@ -109,8 +109,8 @@ describe("круги", () => {
   });
 
   it("участник чата вступает в круг по ссылке, посторонний — нет", async () => {
-    expect((await call(11, "GET", "/me", undefined, "c1")).json.circles).toEqual([{ id: 1, title: "Друзья" }]);
-    expect((await call(11, "GET", "/me", undefined, "c2")).json.circles).toHaveLength(2);
+    // Аня добавила бота в оба чата — она в обоих кругах сразу, без перехода по ссылке
+    expect((await call(11, "GET", "/me")).json.circles).toHaveLength(2);
     expect((await call(12, "GET", "/me", undefined, "c1")).json.circles).toHaveLength(1);
     expect((await call(13, "GET", "/me", undefined, "c2")).json.circles).toEqual([{ id: 2, title: "Книжный клуб" }]);
     expect((await call(15, "GET", "/me", undefined, "c1")).json.circles).toHaveLength(1);
@@ -578,7 +578,9 @@ describe("несколько записей в круг разом", () => {
     chatMembers[-700] = new Set([11, 13]);
     await addBot(-700, "Пряники", 11);
     circleId = (await env.DB.prepare(`SELECT id FROM circles WHERE chat_id = -700`).first<{ id: number }>())!.id;
-    for (const u of [11, 13]) await call(u, "GET", "/me", undefined, `c${circleId}`);
+    // Аня добавила бота — она в круге сразу, даже если открыла приложение не из чата
+    expect((await call(11, "GET", "/me")).json.circles.map((c: any) => c.id)).toContain(circleId);
+    await call(13, "GET", "/me", undefined, `c${circleId}`);
 
     const base = { kind: "thing", direction: "offer", description: "", photoKeys: [], announce: false };
     const a = (await call(11, "POST", "/items", { ...base, title: "Палатка", circleIds: [1] })).json.id;

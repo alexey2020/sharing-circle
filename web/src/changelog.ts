@@ -14,6 +14,12 @@ export interface Release {
 
 export const CHANGELOG: Release[] = [
   {
+    version: "1.4.1",
+    date: "2026-11-14",
+    en: ["Whoever adds the bot to a chat joins the new circle right away — no need to open the catalog from the chat first."],
+    ru: ["Тот, кто добавил бота в чат, сразу состоит в новом круге — не нужно сначала открывать каталог из чата."],
+  },
+  {
     version: "1.4.0",
     date: "2026-11-12",
     en: [

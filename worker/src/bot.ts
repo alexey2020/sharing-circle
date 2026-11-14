@@ -61,6 +61,13 @@ async function createCircle(env: Env, chat: Chat, by: TgUser): Promise<void> {
     return;
   }
   const id = await upsertCircle(env.DB, chat.id, chat.title ?? tr(lang).circleDefault, by.id, lang);
+  // Добавивший бота точно в чате — сразу записываем его в круг, не дожидаясь кнопки «Открыть каталог».
+  await env.DB.prepare(
+    `INSERT INTO memberships (user_id, circle_id) VALUES (?1, ?2)
+     ON CONFLICT(user_id, circle_id) DO UPDATE SET checked_at = datetime('now')`,
+  )
+    .bind(by.id, id)
+    .run();
   const circle = await activeCircle(env, chat.id);
   await sendIntro(env, chat.id, id, asLang(circle?.lang) ?? lang);
 }
